@@ -11,6 +11,7 @@ class compilador:
                 archivo.append(cortada)
 
     mnemonicos = [filita[1] for filita in archivo]
+    mnemonicos = mnemonicos[1:]
     # print(mnemonicos)
     arreglo_mne = np.array(archivo)
 
@@ -44,8 +45,14 @@ class compilador:
         except(TypeError):
             pass
 
+    def get_mnenomicos(self):
+        return self.mnemonicos
+
+    def get_directivas(self):
+        return self.directivas
+
 
 if __name__ == '__main__':
     compa = compilador()
-
-    #compa.tipo_direccionamiento(4)
+    print(compa.mnemonicos)
+    # compa.tipo_direccionamiento(4)
