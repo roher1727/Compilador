@@ -15,6 +15,12 @@ class compilador:
     # print(mnemonicos)
     arreglo_mne = np.array(archivo)
 
+    mnemonicos_opcode = []
+
+    for filita in archivo:
+        mnemonicos_opcode.append([filita[1],filita[2], filita[5], filita[8], filita[11], filita[14], filita[17], filita[20]])
+
+    mnemonicos_opcode = mnemonicos_opcode[1:]
 
     direccionamientos = {'inmediato': [filita[2:5] for filita in archivo], 'directo': [filita[5:8] for filita in archivo], 'indexadox': [filita[8:11] for filita in archivo], 'indexadoy': [filita[11:14] for filita in archivo], 'extendido': [filita[14:17] for filita in archivo], 'inherente': [filita[17:20] for filita in archivo], 'relativo': [filita[20:23] for filita in archivo]}
 
@@ -51,8 +57,12 @@ class compilador:
     def get_directivas(self):
         return self.directivas
 
+    def get_mnenomicos_opcode(self):
+        return self.mnemonicos_opcode
+
 
 if __name__ == '__main__':
     compa = compilador()
-    print(compa.mnemonicos)
+    # print(compa.mnemonicos)
     # compa.tipo_direccionamiento(4)
+    mnemos = print(compa.get_mnenomicos_opcode())
