@@ -41,6 +41,21 @@ class lector:
                     pass
         return subrutinas
 
+    def adquirir_subrutinas_numero(self, texto):
+        compal = compilador()
+        subrutinas = []
+        numero = 0
+        for t in texto:
+            numero += 1
+            t.append(' ')
+            if t[0] != '' and t[0][0] != '*' and t[0].lower() not in compal.mnemonicos and t[0].lower() not in compal.directivas:
+                try:
+                    if t[1].lower() != 'equ':
+                        subrutinas.append([t[0].lower(),numero])
+                except(IndexError):
+                    pass
+        return subrutinas
+
     def adquirir_constantes(self, texto):
         constantes = []
         for t in texto:
@@ -161,6 +176,7 @@ if __name__ == '__main__':
     texto_crudo = lector.adquirir_texto()
     texto_proc = lector.procesar_texto(texto_crudo)
     subrutinas = lector.adquirir_subrutinas(texto_proc)
+    subrutinas_num = lector.adquirir_subrutinas_numero(texto_proc)
     constantes = lector.adquirir_constantes(texto_proc)
     lector.error_identacion(texto_proc, subrutinas, constantes)
     lector.mnemonico_inexistente(texto_proc, compa.get_mnenomicos(), compa.get_directivas())
@@ -170,4 +186,4 @@ if __name__ == '__main__':
     inst_op = lector.instrucciones_operando(texto_proc)
     lector.instruccion_c_operando(inst_op, compa.get_mnenomicos_opcode())
     lector.instruccion_n_operando(inst_op, compa.get_mnenomicos_opcode())
-    print(subrutinas)
+    print(subrutinas_num)

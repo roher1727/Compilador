@@ -35,6 +35,14 @@ def adquirir_constantes_operador(texto):
 
     return constantes
 
+def checar_numero(operador, subrutinas_num):
+    for c in subrutinas_num:    
+        if(operador[2].lower() in c[0]):
+            print(c,operador)
+        
+            return True,c[1] 
+    return False,None
+
 
 def instrucciones_operando(texto):
     inst_operando = []
@@ -46,6 +54,24 @@ def instrucciones_operando(texto):
                     inst_operando.append([t[1], t[2]])
     return inst_operando
 
+
+def instrucciones_operando_num(texto, subrutinas_num):
+    inst_operando = []
+    numero = 0
+    for t in texto:
+        numero += 1
+        t.append(' ')
+        if '*' not in t[0]:
+            if (t[1] != ' '):
+                if(t[0] == ''):
+                    booleano,num = checar_numero(t, subrutinas_num)
+                    if booleano:
+                        inst_operando.append([t[1], abs(numero - num)])
+                    else: 
+                        inst_operando.append([t[1],t[2]])
+                        
+    return inst_operando
+            
 
 def cambiar_constantes(instrucciones, constantes):
     constants = dict(constantes)
@@ -61,35 +87,45 @@ def cambiar_constantes(instrucciones, constantes):
 
 def cambiar_hexa(instrucciones, mnemonicos_opcode, subrutinas):
     for i in instrucciones:
-        print(i)
         for m in mnemonicos_opcode:
             if i[0].lower() == m[0]:
                 # print('{} \n'.format(i))
                 if i[1] == ' ' or i[1].lower() in subrutinas:
-                    if m[7] == '-- ':
+                    if i[1].lower() in subrutinas:
+                        if m[5] != '-- ':
+                            i[0] = m[5]
+                            # print(i, 'extendido')
+                        elif m[7] == '-- ':
+                            i[0] = m[6]
+                            # print(i, 'inherente')
+                        elif m[6] == '-- ':                   
+                            i[0] = m[7]
+                            # print(i, 'relativo')
+                    elif m[7] == '-- ':
                         i[0] = m[6]
-                        print(i, 'inherente')
-                    elif m[6] == '-- ':
+                        # print(i, 'inherente')
+                    elif m[6] == '-- ':                   
                         i[0] = m[7]
-                        print(i, 'relativo')
+                        # print(i, 'relativo')
                 elif ',' in i[1]:
                     if 'x' in i[1] or 'X' in i[1]:
                         i[0] = m[3]
-                        print(i, 'indexado x')
+                        # print(i, 'indexado x')
                     if 'y' in i[1] or 'Y' in i[1]:
                         i[0] = m[4]
-                        print(i, 'indexado y')
+                        # print(i, 'indexado y')
                 elif i[1][0] == '#':
                     i[0] = m[1]
-                    print(i, 'inmediado')
+                    # print(i, 'inmediado')
                 elif len(i[1]) > 3:
-                    i[0] = m[5]
-                    print(i, 'extendido')
+                        i[0] = m[5]
+                        # print(i, 'extendido')
                 elif i[1][0] == '$':
                     i[0] = m[1]
-                    print(i, 'directo')
+                    # print(i, 'directo')
                 else:
-                    print(i, 'unknown')
+                    pass
+                    # print(i, 'unknown')
     return instrucciones
 
 
@@ -100,7 +136,7 @@ def imprimir_chido(instrucciones):
                 it[1] = it[1][1:]
             if it[1][0] == '$':
                 it[1] = it[1][1:]
-        print(it)
+    return instrucciones
 """
     instrucciones1 = [j for i in instrucciones for j in i]
     print(instrucciones1)
@@ -113,8 +149,14 @@ if __name__ == '__main__':
     text = procesar_texto(adquirir_texto())
     # obtener_operadores(text)
     constantes = adquirir_constantes_operador(text)
+    subrutinas_num = lector.adquirir_subrutinas_numero(text)
     inst = instrucciones_operando(text)
     subrutinas = lector.adquirir_subrutinas(text)
     hexa = cambiar_hexa(
         cambiar_constantes(inst, constantes), compa.get_mnenomicos_opcode(), subrutinas)
-    imprimir_chido(hexa)
+    inste = imprimir_chido(hexa)
+    lol = instrucciones_operando_num(text, subrutinas_num)
+    for l,i in zip(lol,inste) : 
+        if i[1].lower() in subrutinas:
+            i[1]=l[1]
+        print(i)
