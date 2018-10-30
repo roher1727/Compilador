@@ -38,7 +38,7 @@ def adquirir_constantes_operador(texto):
 def checar_numero(operador, subrutinas_num):
     for c in subrutinas_num:    
         if(operador[2].lower() in c[0]):
-            print(c,operador)
+            # print(c,operador)
         
             return True,c[1] 
     return False,None
@@ -150,13 +150,84 @@ if __name__ == '__main__':
     # obtener_operadores(text)
     constantes = adquirir_constantes_operador(text)
     subrutinas_num = lector.adquirir_subrutinas_numero(text)
-    inst = instrucciones_operando(text)
+    inst = lector.instrucciones_operando(text)
     subrutinas = lector.adquirir_subrutinas(text)
-    hexa = cambiar_hexa(
-        cambiar_constantes(inst, constantes), compa.get_mnenomicos_opcode(), subrutinas)
+    hexa = cambiar_hexa(cambiar_constantes(inst, constantes), compa.get_mnenomicos_opcode(), subrutinas)
     inste = imprimir_chido(hexa)
     lol = instrucciones_operando_num(text, subrutinas_num)
+    constantes_s = lector.adquirir_constantes(text)
+
+    # Errores
+    lector.error_identacion(text, subrutinas, constantes_s)
+    lector.mnemonico_inexistente(text, compa.get_mnenomicos(), compa.get_directivas())
+    lector.etiqueta_inexistente(text, subrutinas, constantes_s)
+    lector.constante_inexistente(text, subrutinas, constantes_s)
+    lector.no_tiene_end(text)
+    lector.instruccion_c_operando(inst, compa.get_mnenomicos_opcode())
+    lector.instruccion_n_operando(inst, compa.get_mnenomicos_opcode())
+    
+    directivas = compa.get_directivas()
+    
+    khe = []
     for l,i in zip(lol,inste) : 
         if i[1].lower() in subrutinas:
             i[1]=l[1]
-        print(i)
+        if 'X' in str(i[1]):
+            a = list(i[1])
+            a.remove('X')
+            a.remove(',')
+            a.remove('#')
+            a.remove('$')
+
+            a = "".join(a)
+            i[1] = a
+            # print(a)
+
+        if 'Y' in str(i[1]):
+            b = list(i[1])
+            b.remove('Y')
+            b.remove(',')
+            
+            b = "".join(b)
+            i[1] = b
+            # print(b)
+        
+        if '$' in str(i[1]):
+            c = list(i[1])
+            c.remove('$')
+
+            c = "".join(c)
+            i[1] = c
+            # print(c)
+
+        if ',' in str(i[1]):
+            d = list(i[1])
+            d.remove(',')
+
+            d = "".join(d)
+            i[1] = d
+            # print(d)
+        
+        if ' \' ' in str(i[1]):
+            
+            d = list(i[1])
+            print(d)
+            d.remove('\'')
+
+            d = "".join(d)
+            i[1] = d
+            print(d)
+
+        if i[0].lower() in directivas:
+            i[0] = ''
+        khe.append(i)
+    instrucciones1 = [str(j) for i in khe for j in i]
+    # print(instrucciones1)
+    texto = "".join(instrucciones1)
+    # print(texto)
+    with open('muestra.hex','w') as arc:
+        for i in range(0,len(texto),2):
+            if i%32 == 0:
+                print('\n{}>'.format(8000+(i//2)),end=' ',file=arc)
+            print("{}{}".format(texto[i],texto[i+1]),end=' ',file=arc)
+        

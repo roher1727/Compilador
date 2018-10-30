@@ -67,12 +67,14 @@ class lector:
 
     def instrucciones_operando(self, texto):
         inst_operando = []
+        conta = 0
         for t in texto:
+            conta += 1
             t.append(' ')
             if '*' not in t[0]:
                 if (t[1] != ' '):
                     if(t[0] == ''):
-                        inst_operando.append([t[1], t[2]])
+                        inst_operando.append([t[1], t[2], conta])
         return inst_operando
 
     def error_identacion(self, texto, subrutinas, constantes):
@@ -139,25 +141,25 @@ class lector:
     def instruccion_c_operando(self, instrucciones_operando, mnemonicos_opcode):
         conta = 0
         for i in instrucciones_operando:
-            conta += 1
+            # conta += 1
             if i[1] != ' ':
                 for m in mnemonicos_opcode:
                     # print(m, i)
                     if i[0].lower() in m:
                         if m[6] != '-- ':
-                            print('Error', i, conta)
+                            print('Error instruccion con operando', i[2])
 
 
     def instruccion_n_operando(self, instrucciones_operando, mnemonicos_opcode):
         conta = 0
         for i in instrucciones_operando:
-            conta += 1
+            # conta += 1
             if i[1] == ' ':
                 for m in mnemonicos_opcode:
                     # print(m, i)
                     if i[0].lower() in m:
                         if m[6] == '-- ':
-                            print('Error', i, conta)
+                            print('Error instruccion sin operando', i[2])
 
 
 
